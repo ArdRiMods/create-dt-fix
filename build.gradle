@@ -1,0 +1,35 @@
+plugins {
+    id("java-library")
+    id("net.neoforged.moddev") version "2.0.141"
+}
+
+group = "dev.createdtfix"
+version = mod_version
+base { archivesName = "create_dt_fix" }
+
+java { toolchain.languageVersion = JavaLanguageVersion.of(21) }
+
+neoForge {
+    version = neo_version
+    mods {
+        create_dt_fix { sourceSet(sourceSets.main) }
+    }
+}
+
+repositories {
+    // Create and Dynamic Trees from the Modrinth Maven (compile only; not bundled)
+    exclusiveContent {
+        forRepository { maven { url = "https://api.modrinth.com/maven" } }
+        filter { includeGroup("maven.modrinth") }
+    }
+}
+
+dependencies {
+    compileOnly("maven.modrinth:create:${create_version}")
+    compileOnly("maven.modrinth:dynamictrees:${dynamic_trees_version}")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 21
+}

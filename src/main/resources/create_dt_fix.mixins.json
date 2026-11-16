@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.createdtfix.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "DynamicTreeMixin",
+    "SawBlockEntityMixin",
+    "BlockBreakingMovementBehaviourMixin",
+    "BlockBreakingKineticBlockEntityMixin",
+    "TreeCutterMixin",
+    "SawMovementBehaviourMixin",
+    "BranchBlockMixin",
+    "BlockBehaviourMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
