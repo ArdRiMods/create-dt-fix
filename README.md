@@ -70,6 +70,8 @@ What that means for you:
 ## 🙏 Credits
 - Saw compat logic based on Create PR #9898 (MIT, The Create Team).
 - Dynamic Trees by DynamicTreesTeam (MIT).
+- Icon and banner by ArdRiMods, made from real in-game screenshots (no AI), licensed CC BY-SA 4.0.
+- Title font: *BigBlue Terminal* by VileR ([int10h.org](https://int10h.org)), CC BY-SA 4.0. "Fix" font: *Playwrite BE VLG* by The Playwrite Project Authors, SIL OFL 1.1.
 - Code written by Claude (Anthropic AI). Idea, testing and design decisions by ArdRiMods.
 - Not affiliated with the Create team or the Dynamic Trees team.
 

@@ -60,7 +60,9 @@ That is Dynamic Trees' own design. Set `axeDamageMode` to `VANILLA` in `dynamict
 The Create roller. It uses its own break code.
 
 ## 🤖 How this mod was made
-This mod is **vibe coded**. I am the pack maker who found the bug, tested every build in my own pack and decided what the mod should do. The code itself was written by an AI (Claude, by Anthropic) in a chat session, from reading the Create and Dynamic Trees source code. I am not a Java programmer, so I cannot take credit for the code.
+This mod is **vibe coded**, and it carries Modrinth's *Contains AI-generated content* disclosure. I am the pack maker who found the bug, tested every build in my own pack and decided what the mod should do. The code itself was written by an AI (Claude, by Anthropic) in a chat session, from reading the Create and Dynamic Trees source code. Parts of this page were also drafted with that AI. I am not a Java programmer, so I cannot take credit for the code.
+
+All images on this page are real, unedited screenshots from the game.
 
 What that means for you:
 - Every feature was tested in game in a large NeoForge 1.21.1 pack (saw, drill, deployer, roots, thick trees, mushroom trees).
@@ -70,5 +72,7 @@ What that means for you:
 ## 🙏 Credits
 - Saw compat logic based on Create PR #9898 (MIT, The Create Team).
 - Dynamic Trees by DynamicTreesTeam (MIT).
+- Icon and banner by ArdRiMods, made from real in-game screenshots (no AI), licensed CC BY-SA 4.0.
+- Title font: *BigBlue Terminal* by VileR ([int10h.org](https://int10h.org)), CC BY-SA 4.0. "Fix" font: *Playwrite BE VLG* by The Playwrite Project Authors, SIL OFL 1.1.
 - Code written by Claude (Anthropic AI). Idea, testing and design decisions by ArdRiMods.
 - Not affiliated with the Create team or the Dynamic Trees team.
