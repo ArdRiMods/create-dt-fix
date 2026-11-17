@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1 (2026-11-17)
+- New hand-made mod-list logo (replaces the AI-drawn logo from 1.0.0). No code changes.
+
 ## 1.0.0 (2026-11-16)
 First release. Minecraft 1.21.1, NeoForge, Create 6.0.10, Dynamic Trees 1.7+.
 - Re-enable Create's Mechanical Saw compat for Dynamic Trees (drops into storage).
