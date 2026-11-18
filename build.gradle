@@ -33,3 +33,10 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.release = 21
 }
+
+// Fill the mod version into neoforge.mods.toml from gradle.properties
+tasks.named("processResources", ProcessResources) {
+    def props = [mod_version: mod_version]
+    inputs.properties(props)
+    filesMatching("META-INF/neoforge.mods.toml") { expand(props) }
+}

@@ -8,6 +8,7 @@ CP="$( (find "$JARS" -name "*neoforge*client*.jar"; find "$JARS" -name "*.jar" !
 rm -rf "$HERE/out" && mkdir -p "$HERE/out/classes"
 javac --release 21 -encoding UTF-8 -proc:none -nowarn -cp "$CP" -d "$HERE/out/classes" $(find "$HERE/src/main/java" -name '*.java')
 cp -r "$HERE/src/main/resources/." "$HERE/out/classes/"
+sed -i "s/\${mod_version}/$VER/" "$HERE/out/classes/META-INF/neoforge.mods.toml"
 cp "$HERE/LICENSE" "$HERE/out/classes/LICENSE_create_dt_fix"
 (cd "$HERE/out/classes" && jar --create --file "$HERE/out/create_dt_fix-$VER.jar" .)
 echo "Built: $HERE/out/create_dt_fix-$VER.jar"

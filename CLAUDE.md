@@ -1,0 +1,41 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+A server-side-only NeoForge 1.21.1 mod (`create_dt_fix`) that makes Create 6.0.10 machines (saw, drill, deployer, add-on breakers) work with Dynamic Trees 1.7+. It is pure mixins: `CreateDtFix.java` is an empty `@Mod` entry point. Create and Dynamic Trees are `compileOnly` dependencies and are never bundled.
+
+The project owner is a pack maker, not a Java programmer; the code is written by Claude and tested in game by the owner. There are no automated tests. Verification means building, then the owner tests in their pack.
+
+## Build
+
+- `./gradlew build`: the jar goes to `build/libs/`. Needs internet (ModDevGradle plus the Modrinth Maven for Create and Dynamic Trees). CI (`.github/workflows/build.yml`) runs exactly this on every push and PR.
+- `./build.sh <jar-folder>`: offline javac build to `out/create_dt_fix-<ver>.jar`. The folder must hold the Create, Dynamic Trees, NeoForge client/universal, SRG client, FML loader and sponge-mixin jars (README "Building" lists them). The NeoForge client jar is put first on the classpath on purpose: its patched classes must shadow vanilla.
+
+Versions live in `gradle.properties` (`mod_version`, `neo_version`, `create_version`, `dynamic_trees_version`). Java 21.
+
+## Architecture
+
+All behaviour is in `src/main/java/dev/createdtfix/mixin/`, registered in `src/main/resources/create_dt_fix.mixins.json` (`defaultRequire: 1`, so a missing injection target crashes at launch instead of silently doing nothing). Every mixin uses `remap = false`. A new mixin class must be added to that JSON list.
+
+How the pieces fit:
+- **`DynamicTreeMixin`** `@Overwrite`s Create's `compat.dynamictrees.DynamicTree`. Create ships it with the logic commented out; this restores it, based on Create PR #9898. This is the core saw/drill compat: it cuts the whole tree and gathers drops so Create routes them into contraption storage or onto the ground.
+- **Breaker entry points** (`SawBlockEntityMixin`, `SawMovementBehaviourMixin`, `BlockBreakingKineticBlockEntityMixin`, `BlockBreakingMovementBehaviourMixin`) send Dynamic Trees branches and roots down the compat path for stationary and moving breakers. The `Mth.clamp` redirects in the `tick` methods keep break cracks showing on branches.
+- **`ToolDir`** is a server-thread `ThreadLocal` handoff. A breaker mixin records which side of the tree faces the machine just before the cut, and the Dynamic Trees cut reads it once (`take`) so the falling-tree animation falls away from the machine. Always set it right before the cut; `take` clears it.
+- **`BranchBlockMixin`** (`futureBreak`) sends deployer-with-axe drops to the deployer.
+- **`BlockBehaviourMixin`** (`getDestroyProgress`) makes axes break surface roots at log speed.
+- **`TreeCutterMixin`** (`isLog`) stops Create's vanilla tree cutter from treating Dynamic Trees branches as logs, which used to delete trees with no drops.
+
+The mixin targets were checked against the real Create 6.0.10 and Dynamic Trees 1.7.2 jars. When you change a target or descriptor, check it against those jars' bytecode (`javap -c -p`) instead of guessing; Create's internals change between versions.
+
+## Version lock
+
+`neoforge.mods.toml` pins Create to `[6.0.10,6.0.11)`. That is deliberate: a new Create stops the game at launch, so the mod gets re-checked (or retired, if Create merged the fix upstream). Do not loosen this range without checking the new Create source. The Create roller is not covered (it uses its own break code).
+
+## Releases and metadata
+
+- Bump the version only in `gradle.properties` (`mod_version`). `src/main/resources/META-INF/neoforge.mods.toml` has `version = "${mod_version}"`, which `processResources` (Gradle `expand`) and `build.sh` (sed) fill in. Because Gradle `expand` is Groovy templating, a literal `$` in that file must be escaped as `\$`.
+- Releases update `CHANGELOG.md`. `README.md` (GitHub) and `MODRINTH.md` (the Modrinth page, with absolute image URLs) hold mostly the same content and should be kept in sync.
+- User-facing text uses short, plain sentences, and the "vibe coded" credit to Claude stays in the README, MODRINTH page and mods.toml `credits`.
+- `docs/` and `src/main/resources/icon.png` are hand-made by the owner (no AI); don't regenerate them.
