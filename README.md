@@ -57,7 +57,6 @@ In Create 6.0.10 the Dynamic Trees support is switched off in the code. A Mechan
 
 | Switch | What it does |
 |---|---|
-| `sawFix` | Saw cuts a whole Dynamic Tree, with drops |
 | `breakerFix` | Drill, plough and add-on breakers do the same |
 | `fallAwayFromMachine` | The tree falls away from the machine (off: random direction) |
 | `deployerDrops` | A deployer with an axe gets the drops |
@@ -65,7 +64,7 @@ In Create 6.0.10 the Dynamic Trees support is switched off in the code. A Mechan
 | `axeRootSpeed` | Axes cut surface roots at log speed |
 | `breakCracks` | Break cracks always show on branches |
 
-The guard that stops Create's vanilla tree cutter from deleting Dynamic Trees has no switch. Turning it off would only bring the bug back.
+The saw fix and the guard that stops Create's vanilla tree cutter from deleting Dynamic Trees have no switch. Turning them off would only bring the bug back. The saw fix turns itself off if Create ships its own fix.
 
 ## ✅ Tested with
 - Minecraft 1.21.1, NeoForge 21.1.264

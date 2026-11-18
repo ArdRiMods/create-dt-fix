@@ -28,9 +28,6 @@ import org.spongepowered.asm.service.MixinService;
  * Reads the original class files from the jars (no transformers), so it sees Create's code, not ours.
  */
 public final class MixinPlugin implements IMixinConfigPlugin {
-	/** System property read by Config: "true" when this mod's saw fix is applied. */
-	public static final String SAW_FIX_PROPERTY = "create_dt_fix.sawFixActive";
-
 	private static final Logger LOG = LoggerFactory.getLogger("create_dt_fix");
 
 	// Class names (internal form)
@@ -56,7 +53,6 @@ public final class MixinPlugin implements IMixinConfigPlugin {
 	private static final String LIVING = "Lnet/minecraft/world/entity/LivingEntity;";
 	private static final String PLAYER = "Lnet/minecraft/world/entity/player/Player;";
 	private static final String CONSUMER = "Ljava/util/function/BiConsumer;";
-	private static final String FIND_DT_DESC = "(" + BLOCK + POS + ")Ljava/util/Optional;";
 
 	/** One thing a mixin needs: a class, a method, a field, or a call inside a method. */
 	private record Need(String owner, String name, String desc, boolean field, String callOwner, String callName,
@@ -87,11 +83,11 @@ public final class MixinPlugin implements IMixinConfigPlugin {
 			method(DYNAMIC_TREE, "isDynamicBranch", "(" + BLOCK + ")Z"),
 			method(DYNAMIC_TREE, "destroyBlocks", "(" + LEVEL + STACK + PLAYER + CONSUMER + ")V"),
 			field(DYNAMIC_TREE, "startCutPos", POS))));
-		FIXES.put("SawBlockEntityMixin", new Fix("stationary saw (fall direction, roots, saw switch)", List.of(
-			call(SAW_BE, "onBlockBroken", "(" + STATE + ")V", TREE_CUTTER, "findDynamicTree", FIND_DT_DESC),
+		FIXES.put("SawBlockEntityMixin", new Fix("stationary saw (fall direction, roots)", List.of(
+			method(SAW_BE, "onBlockBroken", "(" + STATE + ")V"),
 			method(SAW_BE, "isSawable", "(" + STATE + ")Z"))));
-		FIXES.put("SawMovementBehaviourMixin", new Fix("moving saw (fall direction, saw switch)", List.of(
-			call(SAW_MB, "onBlockBroken", "(" + CONTEXT + POS + STATE + ")V", TREE_CUTTER, "findDynamicTree", FIND_DT_DESC))));
+		FIXES.put("SawMovementBehaviourMixin", new Fix("moving saw (fall direction)", List.of(
+			method(SAW_MB, "onBlockBroken", "(" + CONTEXT + POS + STATE + ")V"))));
 		FIXES.put("BlockBreakingKineticBlockEntityMixin", new Fix("stationary drill and breakers", concat(dtCut, List.of(
 			method(BREAKER_BE, "onBlockBroken", "(" + STATE + ")V"),
 			call(BREAKER_BE, "tick", "()V", MTH, "clamp", "(III)I"),
@@ -129,8 +125,6 @@ public final class MixinPlugin implements IMixinConfigPlugin {
 				LOG.warn("Create x Dynamic Trees Fix: {} is OFF. Create or Dynamic Trees changed: {} ({}). "
 					+ "The other fixes still work. Please report this with your Create and Dynamic Trees versions.",
 					fix.label(), need.describe(), missing);
-				if (simple.equals("DynamicTreeMixin"))
-					System.setProperty(SAW_FIX_PROPERTY, "false");
 				return false;
 			}
 		}
@@ -140,11 +134,9 @@ public final class MixinPlugin implements IMixinConfigPlugin {
 			if (!returnsFalseOnly(isBranch)) {
 				LOG.info("Create x Dynamic Trees Fix: Create has its own Dynamic Trees saw fix, so this mod's "
 					+ "saw fix is off. The other fixes stay on.");
-				System.setProperty(SAW_FIX_PROPERTY, "false");
 				return false;
 			}
 			LOG.info("Create x Dynamic Trees Fix: saw fix is on (Create's Dynamic Trees compat is still empty).");
-			System.setProperty(SAW_FIX_PROPERTY, "true");
 		}
 		return true;
 	}
