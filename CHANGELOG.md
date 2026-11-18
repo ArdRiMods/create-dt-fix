@@ -1,10 +1,11 @@
 # Changelog
 
-## 1.1.0 (not released yet)
+## 1.1.0 (2026-11-19)
 - New config file `config/create_dt_fix-common.toml`: one on/off switch per fix, all on by default.
 - Create-update safety: if a Create update changes code this mod needs, only that fix turns off (with a line in the log). The game no longer crashes at launch.
 - If Create ships its own Dynamic Trees saw fix, this mod's saw fix turns off and the other fixes stay on.
 - Works with any Create 6.0.x from 6.0.10 (was locked to 6.0.10).
+- Page: new "For modpack makers", "Config" and "Tested with" sections.
 
 ## 1.0.1 (2026-11-17)
 - New hand-made mod-list logo (replaces the AI-drawn logo from 1.0.0). No code changes.

@@ -43,11 +43,10 @@ From the original design chat (owner's notes, not in the repo):
 - Dynamic Trees has a Fabric 1.21.1 beta, so a Fabric port is possible if Create runs on Fabric 1.21.1 (not yet checked).
 - The old "Dynamic Trees Create Compat" add-on does not work on Create 6 and must not be in the pack alongside this mod.
 
-1.1.0 (decided 2026-11-19):
-- Done in code, waiting for the owner's in-game test: Create-update safety (`MixinPlugin`), the config file (`Config`), and the Create range widened to `[6.0.10,6.1)`.
-- Page text: a "For modpack makers" section (safe to add or remove at any time, no blocks, items or saved data; server-side only; free to include in any modpack) and a "Tested with" list.
+1.1.0 (2026-11-19): Create-update safety (`MixinPlugin`), the config file (`Config`), the Create range widened to `[6.0.10,6.1)`, and the "For modpack makers", "Config" and "Tested with" page sections. Tested in game by the owner.
 
 Planned for 1.2.0 (split out of 1.1.0 so the replant tests don't hold up the safety fix):
+- Optional `sawSilkTouchMushrooms` switch (default off): saws drop Dynamic Trees Plus mushroom stems. Today the saw passes no tool to `Species.getBranchesDrops`, and the DT+ mushroom branch loot table needs Silk Touch, so stems drop nothing (same as plain Create on vanilla huge mushrooms). A deployer with a Silk Touch axe already drops them. Owner asked for this on 2026-11-19, for after 1.1.0.
 - Auto-replant. After a machine cuts a tree at its lowest branch, take one seed of that tree from the drops (never a free seed) and plant it (`TreeHelper.findRootNode`, `Species.getSeedStack`, `Species.plantSapling`). The config default is off.
 - In-game control per machine: shift + right-click a breaker (saw, drill) to switch between "replant" and "clear forest", with an action-bar message to confirm the change (vanilla message, so it works server-side only).
 - Before writing it, the owner tests: a moving saw contraption over a Dynamic Trees sapling (old Create #2946; the new sapling may be cut right away), and whether rooty soil turns back to dirt straight after the cut.

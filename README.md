@@ -1,6 +1,6 @@
 ![Create × Dynamic Trees Fix](docs/banner.png)
 
-[![Requires Create 6.0.10](https://img.shields.io/badge/requires-Create%206.0.10-c9a13a?style=flat-square)](https://modrinth.com/mod/create)
+[![Requires Create 6.0.10+](https://img.shields.io/badge/requires-Create%206.0.10%2B-c9a13a?style=flat-square)](https://modrinth.com/mod/create)
 [![Requires Dynamic Trees](https://img.shields.io/badge/requires-Dynamic%20Trees%201.7%2B-4f9a4a?style=flat-square)](https://modrinth.com/mod/dynamictrees)
 ![NeoForge 1.21.1](https://img.shields.io/badge/NeoForge-1.21.1-e07a36?style=flat-square)
 ![Server-side](https://img.shields.io/badge/side-server%20only-5b7fa6?style=flat-square)
@@ -32,16 +32,46 @@ In Create 6.0.10 the Dynamic Trees support is switched off in the code. A Mechan
 - **Surface roots**: saws cut them, so a root no longer stops a contraption. Axes (player or deployer) cut roots at log speed.
 - **No more vanished trees**: Create's vanilla tree cutter no longer deletes a Dynamic Tree with no drops.
 - **Break cracks** always show on branches.
+- **Config file** with one on/off switch per fix (all on by default). See below.
 
 ## 📦 Requirements
 | | Version |
 |---|---|
 | Minecraft | 1.21.1 |
 | NeoForge | 21.1.219 or newer |
-| Create | **6.0.10** (exact) |
+| Create | 6.0.10 or newer 6.0.x |
 | Dynamic Trees | 1.7.0 or newer |
 
 **Server-side only.** Install it on the server (or in single player). Players without the mod can still join.
+
+## 🧰 For modpack makers
+- **Server-side only.** Players do not need it. Clients with or without it can join.
+- **Safe to add or remove at any time.** It adds no blocks, no items and no saved data. Remove it and the world loads as if it was never there.
+- **Free to include in any modpack**, on any platform. It is MIT licensed. No need to ask.
+- **Safe with Create updates.** If a Create 6.0.x update changes code this mod needs, only that one fix turns off, with a line in the log. The game does not crash. If Create fixes the saw itself, this mod's saw fix turns off and the other fixes stay on.
+- **Config:** `config/create_dt_fix-common.toml`. Ship it in your pack's `config` folder to set the defaults.
+- **Do not use it together with** the old "Dynamic Trees Create Compat" add-on. That add-on does not work on Create 6.
+
+## ⚙️ Config
+`config/create_dt_fix-common.toml`. Every switch is on by default. Changes apply when you save the file, with no restart.
+
+| Switch | What it does |
+|---|---|
+| `sawFix` | Saw cuts a whole Dynamic Tree, with drops |
+| `breakerFix` | Drill, plough and add-on breakers do the same |
+| `fallAwayFromMachine` | The tree falls away from the machine (off: random direction) |
+| `deployerDrops` | A deployer with an axe gets the drops |
+| `sawCutsRoots` | Saws cut surface roots |
+| `axeRootSpeed` | Axes cut surface roots at log speed |
+| `breakCracks` | Break cracks always show on branches |
+
+The guard that stops Create's vanilla tree cutter from deleting Dynamic Trees has no switch. Turning it off would only bring the bug back.
+
+## ✅ Tested with
+- Minecraft 1.21.1, NeoForge 21.1.264
+- Create 6.0.10
+- Dynamic Trees 1.7.2, Dynamic Trees Plus 1.3.2
+- In the same pack (about 250 mods): Dynamic Trees add-ons for Biomes O' Plenty, Oh The Biomes We've Gone, Quark, Regions Unexplored, Terralith and Ars Nouveau
 
 ## ❓ FAQ
 **Do players need this mod?**
@@ -50,8 +80,8 @@ No. Only the server (or the single-player world) needs it.
 **Does it work with Dynamic Trees add-ons (Dynamic Trees Plus and others)?**
 Yes. The fixes work on every Dynamic Trees tree type, including add-on trees and mushroom trees.
 
-**Why "Create 6.0.10 exact"?**
-Create has a pending fix for the saw (Create issue #9657, PR #9898). When a new Create version comes out, this mod stops the game at launch with a clear message. Then I check the new Create and update this mod (or retire it, if Create fixed everything).
+**What happens when Create updates?**
+Create has a pending fix for the saw (Create issue #9657, PR #9898). Any Create 6.0.x from 6.0.10 is allowed. At launch, the mod checks Create's code. If something it needs has changed, only that fix turns off, with a line in the log. If Create ships its own saw fix, this mod's saw fix turns off and the rest stay on. Create 6.1 or newer stops the game at launch with a clear message, so I can check it first.
 
 **Why does my axe lose durability in a deployer?**
 That is Dynamic Trees' own design. Set `axeDamageMode` to `VANILLA` in `dynamictrees-server.toml` for 1 damage per tree.
