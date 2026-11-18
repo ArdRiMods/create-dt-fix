@@ -33,6 +33,13 @@ The mixin targets were checked against the real Create 6.0.10 and Dynamic Trees 
 
 `neoforge.mods.toml` pins Create to `[6.0.10,6.0.11)`. That is deliberate: a new Create stops the game at launch, so the mod gets re-checked (or retired, if Create merged the fix upstream). Do not loosen this range without checking the new Create source. The Create roller is not covered (it uses its own break code).
 
+## Skills
+
+Project skills in `.claude/skills/`:
+- `deploy-test`: build, then copy the jar into a Prism instance (default `MegaPack2_BUP`), replacing old copies.
+- `log-triage`: find mixin, Create and Dynamic Trees failures in an instance's `latest.log` and newest crash report.
+- `verify-mixin-targets`: use javap to check every mixin target against the Create and Dynamic Trees jars. Run before every release and after dependency updates.
+
 ## Releases and metadata
 
 - Bump the version only in `gradle.properties` (`mod_version`). `src/main/resources/META-INF/neoforge.mods.toml` has `version = "${mod_version}"`, which `processResources` (Gradle `expand`) and `build.sh` (sed) fill in. Because Gradle `expand` is Groovy templating, a literal `$` in that file must be escaped as `\$`.
