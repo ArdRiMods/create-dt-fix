@@ -28,12 +28,13 @@ displayTest = "IGNORE_SERVER_VERSION"
 [[mixins]]
 config = "create_dt_fix.mixins.json"
 
-# Locked to Create 6.0.10. A newer Create stops the game at launch with a clear message,
-# so the mod is checked against the new Create (which may already include the fix).
+# Create 6.0.x. At launch, MixinPlugin turns off only the fixes whose Create code changed
+# (and this mod's saw fix if Create has its own). Create 6.1 or newer stops the game at
+# launch with a clear message, so the mod is checked against it first.
 [[dependencies.create_dt_fix]]
 modId = "create"
 type = "required"
-versionRange = "[6.0.10,6.0.11)"
+versionRange = "[6.0.10,6.1)"
 ordering = "AFTER"
 side = "BOTH"
 

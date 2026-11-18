@@ -81,4 +81,4 @@ Two ways:
 1. **Gradle** (needs internet): `./gradlew build`. The jar is in `build/libs/`.
 2. **Offline, with javac**: put these jars in one folder, then run `./build.sh <folder>`:
    - `create-1.21.1-6.0.10.jar` and `dynamictrees-neoforge-1.21.1-1.7.x.jar` (from `mods/`)
-   - From the launcher `libraries/` folder: `neoforge-21.1.x-client.jar`, `neoforge-21.1.x-universal.jar`, `client-1.21.1-<date>-srg.jar`, `loader-4.0.x.jar`, `sponge-mixin-*.jar`
+   - From the launcher `libraries/` folder: `neoforge-21.1.x-client.jar`, `neoforge-21.1.x-universal.jar`, `client-1.21.1-<date>-srg.jar`, `loader-4.0.x.jar`, `sponge-mixin-*.jar`, `asm-9.x.jar`, `asm-tree-9.x.jar`, `slf4j-api-2.x.jar`

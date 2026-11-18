@@ -18,6 +18,10 @@ public final class ToolDir {
 
 	/** Side of the tree that faces the machine. Vertical results are ignored. */
 	public static void set(Direction towardMachine) {
+		if (!Config.on(Config.FALL_AWAY)) {
+			NEXT.remove();
+			return;
+		}
 		NEXT.set(towardMachine != null && towardMachine.getAxis().isHorizontal() ? towardMachine : null);
 	}
 

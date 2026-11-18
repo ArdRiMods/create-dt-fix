@@ -20,6 +20,8 @@ Versions live in `gradle.properties` (`mod_version`, `neo_version`, `create_vers
 All behaviour is in `src/main/java/dev/createdtfix/mixin/`, registered in `src/main/resources/create_dt_fix.mixins.json` (`defaultRequire: 1`, so a missing injection target crashes at launch instead of silently doing nothing). Every mixin uses `remap = false`. A new mixin class must be added to that JSON list.
 
 How the pieces fit:
+- **`MixinPlugin`** (set as `plugin` in the mixins JSON) is the Create-update safety. Before each mixin is applied, it reads the original Create and Dynamic Trees class files (`getClassNode(name, false)`, no transformers) and checks every method, field and call that mixin needs. If one is missing, only that mixin is skipped, with a warning in the log. It also skips `DynamicTreeMixin` when Create's `isDynamicBranch` is no longer just `return false` (Create fixed it upstream), and passes that result to `Config` through the `create_dt_fix.sawFixActive` system property. A new mixin, or a changed target, needs its entry in `MixinPlugin.FIXES`.
+- **`Config`** is `config/create_dt_fix-common.toml` (COMMON, so pack makers ship it in `config/`). There is one switch per fix, all on by default, and each mixin reads its switch when it runs (`Config.on(...)`, which counts as "on" before the file loads). The `TreeCutterMixin` guard has no switch on purpose: turning it off only brings back trees vanishing with no drops.
 - **`DynamicTreeMixin`** `@Overwrite`s Create's `compat.dynamictrees.DynamicTree`. Create ships it with the logic commented out; this restores it, based on Create PR #9898. This is the core saw/drill compat: it cuts the whole tree and gathers drops so Create routes them into contraption storage or onto the ground.
 - **Breaker entry points** (`SawBlockEntityMixin`, `SawMovementBehaviourMixin`, `BlockBreakingKineticBlockEntityMixin`, `BlockBreakingMovementBehaviourMixin`) send Dynamic Trees branches and roots down the compat path for stationary and moving breakers. The `Mth.clamp` redirects in the `tick` methods keep break cracks showing on branches.
 - **`ToolDir`** is a server-thread `ThreadLocal` handoff. A breaker mixin records which side of the tree faces the machine just before the cut, and the Dynamic Trees cut reads it once (`take`) so the falling-tree animation falls away from the machine. Always set it right before the cut; `take` clears it.
@@ -29,9 +31,9 @@ How the pieces fit:
 
 The mixin targets were checked against the real Create 6.0.10 and Dynamic Trees 1.7.2 jars. When you change a target or descriptor, check it against those jars' bytecode (`javap -c -p`) instead of guessing; Create's internals change between versions.
 
-## Version lock
+## Create version range
 
-`neoforge.mods.toml` pins Create to `[6.0.10,6.0.11)`. That is deliberate: a new Create stops the game at launch, so the mod gets re-checked (or retired, if Create merged the fix upstream). Do not loosen this range without checking the new Create source. The Create roller is not covered (it uses its own break code).
+`neoforge.mods.toml` allows Create `[6.0.10,6.1)`. Within 6.0.x, `MixinPlugin` turns off only the fixes whose Create code changed, so a Create patch can't crash the game at launch. Create 6.1 or newer still stops the game, so the mod gets checked first (or retired, if Create merged the fix upstream). Don't widen the range without checking the new Create source and running `verify-mixin-targets`. The Create roller is not covered (it uses its own break code).
 
 ## Background and roadmap
 
@@ -41,11 +43,14 @@ From the original design chat (owner's notes, not in the repo):
 - Dynamic Trees has a Fabric 1.21.1 beta, so a Fabric port is possible if Create runs on Fabric 1.21.1 (not yet checked).
 - The old "Dynamic Trees Create Compat" add-on does not work on Create 6 and must not be in the pack alongside this mod.
 
-Planned for 1.1.0:
-- Create-update safety instead of the hard version lock. At startup, check whether Create's `DynamicTree` compat is still empty. If Create has fixed it, turn off only the saw fix, keep the rest, and log one line.
-- A config file with one on/off switch per fix, all on by default.
-- Auto-replant (config option): after a machine cuts a tree, plant one seed from the drops on the rooty soil.
+1.1.0 (decided 2026-11-19):
+- Done in code, waiting for the owner's in-game test: Create-update safety (`MixinPlugin`), the config file (`Config`), and the Create range widened to `[6.0.10,6.1)`.
 - Page text: a "For modpack makers" section (safe to add or remove at any time, no blocks, items or saved data; server-side only; free to include in any modpack) and a "Tested with" list.
+
+Planned for 1.2.0 (split out of 1.1.0 so the replant tests don't hold up the safety fix):
+- Auto-replant. After a machine cuts a tree at its lowest branch, take one seed of that tree from the drops (never a free seed) and plant it (`TreeHelper.findRootNode`, `Species.getSeedStack`, `Species.plantSapling`). The config default is off.
+- In-game control per machine: shift + right-click a breaker (saw, drill) to switch between "replant" and "clear forest", with an action-bar message to confirm the change (vanilla message, so it works server-side only).
+- Before writing it, the owner tests: a moving saw contraption over a Dynamic Trees sapling (old Create #2946; the new sapling may be cut right away), and whether rooty soil turns back to dirt straight after the cut.
 
 Not yet tested in game; each needs the owner's test before any code is written:
 - Mechanical Harvester on Dynamic Trees fruit (apples, add-on fruit and nut trees)

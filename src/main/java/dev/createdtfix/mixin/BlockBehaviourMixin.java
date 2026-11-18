@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.dtteam.dynamictrees.block.branch.SurfaceRootBlock;
+import dev.createdtfix.Config;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
@@ -25,7 +26,8 @@ public abstract class BlockBehaviourMixin {
 	@Inject(method = "getDestroyProgress", at = @At("HEAD"), cancellable = true)
 	private void createdtfix$axeOnRoots(BlockState state, Player player, BlockGetter level, BlockPos pos,
 		CallbackInfoReturnable<Float> cir) {
-		if (!((Object) this instanceof SurfaceRootBlock) || !player.getMainHandItem().is(ItemTags.AXES))
+		if (!((Object) this instanceof SurfaceRootBlock) || !player.getMainHandItem().is(ItemTags.AXES)
+			|| !Config.on(Config.AXE_ROOT_SPEED))
 			return;
 		float hardness = state.getDestroySpeed(level, pos);
 		if (hardness < 0)

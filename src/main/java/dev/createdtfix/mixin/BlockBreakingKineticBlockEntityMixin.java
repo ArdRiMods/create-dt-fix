@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.simibubi.create.compat.dynamictrees.DynamicTree;
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity;
 import com.simibubi.create.content.kinetics.saw.TreeCutter;
+import dev.createdtfix.Config;
 import dev.createdtfix.ToolDir;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +36,7 @@ public abstract class BlockBreakingKineticBlockEntityMixin {
 	/** A Dynamic Trees branch is cut as a whole tree; drops land in front of the machine. */
 	@Inject(method = "onBlockBroken", at = @At("HEAD"), cancellable = true)
 	private void createdtfix$cutDynamicTree(BlockState stateToBreak, CallbackInfo ci) {
-		if (!TreeCutter.canDynamicTreeCutFrom(stateToBreak.getBlock()))
+		if (!Config.on(Config.BREAKER_FIX) || !TreeCutter.canDynamicTreeCutFrom(stateToBreak.getBlock()))
 			return;
 		Level level = ((BlockEntity) (Object) this).getLevel();
 		if (level == null)
@@ -59,6 +60,8 @@ public abstract class BlockBreakingKineticBlockEntityMixin {
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(III)I"))
 	private int createdtfix$visibleCracks(int value, int min, int max) {
 		int step = Mth.clamp(value, min, max);
+		if (!Config.on(Config.BREAK_CRACKS))
+			return step;
 		Level level = ((BlockEntity) (Object) this).getLevel();
 		if (level != null && breakingPos != null
 			&& TreeCutter.canDynamicTreeCutFrom(level.getBlockState(breakingPos).getBlock()))

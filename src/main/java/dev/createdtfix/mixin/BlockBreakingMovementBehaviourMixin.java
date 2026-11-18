@@ -11,6 +11,7 @@ import com.simibubi.create.compat.dynamictrees.DynamicTree;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.kinetics.base.BlockBreakingMovementBehaviour;
 import com.simibubi.create.content.kinetics.saw.TreeCutter;
+import dev.createdtfix.Config;
 import dev.createdtfix.ToolDir;
 
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public abstract class BlockBreakingMovementBehaviourMixin {
 	@Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
 	private void createdtfix$cutDynamicTree(MovementContext context, BlockPos pos, CallbackInfo ci) {
 		Level world = context.world;
-		if (!TreeCutter.canDynamicTreeCutFrom(world.getBlockState(pos).getBlock()))
+		if (!Config.on(Config.BREAKER_FIX) || !TreeCutter.canDynamicTreeCutFrom(world.getBlockState(pos).getBlock()))
 			return;
 		ToolDir.setFromPositions(pos, context.position, context.motion);
 		MovementBehaviour self = (MovementBehaviour) (Object) this;
@@ -41,6 +42,8 @@ public abstract class BlockBreakingMovementBehaviourMixin {
 	@Redirect(method = "tickBreaker", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(III)I"))
 	private int createdtfix$visibleCracks(int value, int min, int max, MovementContext context) {
 		int step = Mth.clamp(value, min, max);
+		if (!Config.on(Config.BREAK_CRACKS))
+			return step;
 		BlockPos pos = NbtUtils.readBlockPos(context.data, "BreakingPos").orElse(null);
 		if (pos != null && TreeCutter.canDynamicTreeCutFrom(context.world.getBlockState(pos).getBlock()))
 			return Math.min(step, 2);

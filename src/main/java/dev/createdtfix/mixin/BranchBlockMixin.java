@@ -14,6 +14,7 @@ import com.dtteam.dynamictrees.entity.FallingTreeEntity;
 import com.dtteam.dynamictrees.systems.nodemapper.NetVolumeNode;
 import com.dtteam.dynamictrees.utility.ItemUtils;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
+import dev.createdtfix.Config;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,13 +37,13 @@ public abstract class BranchBlockMixin {
 	@Inject(method = "futureBreak", at = @At("HEAD"), cancellable = true)
 	private void createdtfix$deployerDrops(BlockState state, Level level, BlockPos cutPos, LivingEntity entity,
 		CallbackInfo ci) {
-		if (!(entity instanceof DeployerFakePlayer player))
+		if (!(entity instanceof DeployerFakePlayer player) || !Config.on(Config.DEPLOYER_DROPS))
 			return;
 		BranchBlock self = (BranchBlock) (Object) this;
 
 		// Fall away from the deployer
 		double dx = player.getX() - (cutPos.getX() + 0.5), dz = player.getZ() - (cutPos.getZ() + 0.5);
-		Direction toolDir = (dx * dx + dz * dz) < 1.0E-4
+		Direction toolDir = (dx * dx + dz * dz) < 1.0E-4 || !Config.on(Config.FALL_AWAY)
 			? Direction.Plane.HORIZONTAL.getRandomDirection(level.random)
 			: Direction.getNearest(dx, 0, dz);
 
