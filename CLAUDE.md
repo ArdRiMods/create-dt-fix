@@ -33,6 +33,27 @@ The mixin targets were checked against the real Create 6.0.10 and Dynamic Trees 
 
 `neoforge.mods.toml` pins Create to `[6.0.10,6.0.11)`. That is deliberate: a new Create stops the game at launch, so the mod gets re-checked (or retired, if Create merged the fix upstream). Do not loosen this range without checking the new Create source. The Create roller is not covered (it uses its own break code).
 
+## Background and roadmap
+
+From the original design chat (owner's notes, not in the repo):
+- The bug: Create issue #9657 (confirmed; duplicates such as #10220 were reported on 6.0.10), also reported as Dynamic Trees #1216. Create's fix is PR #9898, which was not merged at the time.
+- Only Minecraft 1.21.1 has the no-drops bug. Create 6.0.8 for 1.20.1 ships the Dynamic Trees saw compat active, so a 1.20.1 port would only bring the extras (falling trees, roots, deployer drops, break cracks). It is low priority, done only if users ask.
+- Dynamic Trees has a Fabric 1.21.1 beta, so a Fabric port is possible if Create runs on Fabric 1.21.1 (not yet checked).
+- The old "Dynamic Trees Create Compat" add-on does not work on Create 6 and must not be in the pack alongside this mod.
+
+Planned for 1.1.0:
+- Create-update safety instead of the hard version lock. At startup, check whether Create's `DynamicTree` compat is still empty. If Create has fixed it, turn off only the saw fix, keep the rest, and log one line.
+- A config file with one on/off switch per fix, all on by default.
+- Auto-replant (config option): after a machine cuts a tree, plant one seed from the drops on the rooty soil.
+- Page text: a "For modpack makers" section (safe to add or remove at any time, no blocks, items or saved data; server-side only; free to include in any modpack) and a "Tested with" list.
+
+Not yet tested in game; each needs the owner's test before any code is written:
+- Mechanical Harvester on Dynamic Trees fruit (apples, add-on fruit and nut trees)
+- A saw contraption passing over a planted Dynamic Trees sapling (old Create #2946)
+- A piston or gantry moving a branch or rooty soil
+- Create Aeronautics (Sable) contraptions cutting trees (Dynamic Trees #1173, #1216)
+- A stress test in a copy of ATM10 (about 500 mods)
+
 ## Skills
 
 Project skills in `.claude/skills/`:
